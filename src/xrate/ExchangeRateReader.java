@@ -1,5 +1,8 @@
 package xrate;
 
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
@@ -9,7 +12,8 @@ import java.util.Properties;
  */
 public class ExchangeRateReader {
 
-    private String accessKey;
+    private String accessKey = "";
+    private String URL;
 
     /**
      * Construct an exchange rate reader using the given base URL. All requests
@@ -30,6 +34,8 @@ public class ExchangeRateReader {
          * provided `baseURL` in a field so it will be accessible later.
          */
 
+        //String currencyCode, int year, int month, int day
+         URL = baseURL;
         // TODO Your code here
 
         // Reads the access keys from `etc/access_keys.properties`
@@ -83,9 +89,19 @@ public class ExchangeRateReader {
      */
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
         // TODO Your code here
+        String constructedURL = URL+Integer.toString(year)+"-"+month+"-"+day+"?accesskey="+accessKey;
+        URL apicall = new URL(constructedURL);
+        InputStream currencyData = apicall.openStream();
+        Reader currencyReader = new InputStreamReader(currencyData);
+        JsonParser jsonParser = new JsonParser();
+        JsonObject callresult = jsonParser.parse(currencyReader).getAsJsonObject();
+        return callresult.getAsJsonObject("rates").get(currencyCode).getAsFloat();
+
+        //JsonReader gsonresult = new Gson().fromJson()
+
 
         // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
 
     /**
@@ -108,8 +124,13 @@ public class ExchangeRateReader {
     public float getExchangeRate(
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
-        // TODO Your code here
-
+        String constructedURL = URL+Integer.toString(year)+"-"+month+"-"+day+"?accesskey="+accessKey;
+        URL apicall = new URL(constructedURL);
+        InputStream currencyData = apicall.openStream();
+        Reader currencyReader = new InputStreamReader(currencyData);
+        JsonParser jsonParser = new JsonParser();
+        JsonObject callresult = jsonParser.parse(currencyReader).getAsJsonObject();
+        //return callresult.getAsJsonObject("rates").get(currencyCode).getAsFloat();
         // Remove the next line when you've implemented this method.
         throw new UnsupportedOperationException();
     }
