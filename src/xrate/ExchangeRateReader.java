@@ -130,8 +130,7 @@ public class ExchangeRateReader {
         Reader currencyReader = new InputStreamReader(currencyData);
         JsonParser jsonParser = new JsonParser();
         JsonObject callresult = jsonParser.parse(currencyReader).getAsJsonObject();
-        //return callresult.getAsJsonObject("rates").get(currencyCode).getAsFloat();
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+          float result = callresult.getAsJsonObject("rates").get(fromCurrency).getAsFloat() * callresult.getAsJsonObject("rates").get(toCurrency).getAsFloat();
+          return result;
     }
 }
