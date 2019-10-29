@@ -89,16 +89,27 @@ public class ExchangeRateReader {
      */
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
         // TODO Your code here
-        String constructedURL = URL+Integer.toString(year)+"-"+month+"-"+day+"?accesskey="+accessKey;
+        String marshalledMonth = Integer.toString(month);
+        String marshalledDay = Integer.toString(day);
+
+        if(month<10 && month >= 0){
+            marshalledMonth = Integer.toString(month);
+            String zero = "0";
+            marshalledMonth = zero.concat(marshalledMonth);
+        }
+        if(day<10 && day >= 0){
+            marshalledDay = Integer.toString(day);
+            String zero = "0";
+            marshalledDay = zero.concat(marshalledDay);
+        }
+        String constructedURL = URL + Integer.toString(year) + "-" + marshalledMonth + "-" + marshalledDay + "?access_key=" + accessKey;
+
         URL apicall = new URL(constructedURL);
         InputStream currencyData = apicall.openStream();
         Reader currencyReader = new InputStreamReader(currencyData);
         JsonParser jsonParser = new JsonParser();
         JsonObject callresult = jsonParser.parse(currencyReader).getAsJsonObject();
         return callresult.getAsJsonObject("rates").get(currencyCode).getAsFloat();
-
-        //JsonReader gsonresult = new Gson().fromJson()
-
 
         // Remove the next line when you've implemented this method.
         //throw new UnsupportedOperationException();
@@ -124,13 +135,27 @@ public class ExchangeRateReader {
     public float getExchangeRate(
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
-        String constructedURL = URL+Integer.toString(year)+"-"+month+"-"+day+"?accesskey="+accessKey;
+        String marshalledMonth = Integer.toString(month);
+        String marshalledDay = Integer.toString(day);
+
+        if(month<10 && month >= 0){
+            marshalledMonth = Integer.toString(month);
+            String zero = "0";
+            marshalledMonth = zero.concat(marshalledMonth);
+        }
+        if(day<10 && day >= 0){
+            marshalledDay = Integer.toString(day);
+            String zero = "0";
+            marshalledDay = zero.concat(marshalledDay);
+        }
+        String constructedURL = URL+Integer.toString(year)+"-"+marshalledMonth+"-"+marshalledDay+"?access_key="+accessKey;
         URL apicall = new URL(constructedURL);
         InputStream currencyData = apicall.openStream();
         Reader currencyReader = new InputStreamReader(currencyData);
         JsonParser jsonParser = new JsonParser();
         JsonObject callresult = jsonParser.parse(currencyReader).getAsJsonObject();
-          float result = callresult.getAsJsonObject("rates").get(fromCurrency).getAsFloat() * callresult.getAsJsonObject("rates").get(toCurrency).getAsFloat();
+        System.out.println(callresult);
+          float result = callresult.getAsJsonObject("rates").get(fromCurrency).getAsFloat() / callresult.getAsJsonObject("rates").get(toCurrency).getAsFloat();
           return result;
     }
 }
